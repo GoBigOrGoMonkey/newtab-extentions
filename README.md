@@ -1,36 +1,29 @@
 # Extension Vault
 
-A Next.js starter for a ZIP-based Chrome extension library with upload, listing, download, and replacement/update flows.
-
-## Before deploying
-
-**Important:** this starter is not production-ready for an open public upload service. Uploading is currently unauthenticated, and public ZIP downloads are accessible to anyone. Before sharing it publicly, add publisher authentication, rate limiting, moderation/reporting, ownership checks on updates, malware scanning, and abuse controls. Only distribute extensions you have permission to share.
+Next.js starter for a ZIP-based Chrome extension library with upload, listing, download, and replacement/update flows.
 
 ## Deploy to Vercel
 
-1. Upload this project to a private or public GitHub repository.
-2. Import the repository in Vercel as a Next.js project.
-3. In Vercel Storage, create a **Blob** store and a **KV** store and connect them to this project. This provides `BLOB_READ_WRITE_TOKEN` and `KV_*` environment variables.
-4. Deploy. Redeploy after adding or changing environment variables.
-5. Open the deployed site and upload a `.zip` containing `manifest.json` at the ZIP root.
+1. Push this project to GitHub and import it into Vercel.
+2. In Vercel project settings, make sure **Framework Preset** is **Next.js**.
+3. In **Build and Deployment**, leave **Build Command** as `npm run build` (or the default) and **Output Directory** set to the framework default / override disabled. Do not set it to `public`.
+4. Create and connect a Vercel Blob store and an Upstash Redis database from the Vercel Marketplace.
+5. Redeploy after connecting storage.
 
 ## Local development
 
-- Node.js 20.9+
-- `npm install`
-- Connect a Vercel Blob and KV store (or set the variables in `.env.local`)
-- `npm run dev`
+Requires Node.js 20.9+. Run `npm install`, configure `.env.local` from `.env.example`, then `npm run dev`.
 
 ## API
 
-- `GET /api/extensions` — list the catalog
+- `GET /api/extensions` — list catalog
 - `POST /api/extensions/upload` — multipart form with `file`
-- `GET /api/extensions/:id` — extension metadata
+- `GET /api/extensions/:id` — metadata
 - `PUT /api/extensions/:id` — multipart form with replacement `file`
 - `GET /api/extensions/:id/download` — redirect to ZIP download
 
-The API validates ZIP format and checks for a root `manifest.json`, but this is not a security scanner. Extension installation behavior is controlled by Chrome; downloading a ZIP does not automatically install it.
+The upload validates ZIP structure and a root `manifest.json`; it is not a malware scanner.
 
-## Chrome extension integration
+## Before public launch
 
-A companion Chrome extension can request `GET https://YOUR_DOMAIN/api/extensions` and display `extensions`. Download a ZIP using `/api/extensions/:id/download`. If the companion extension uses `fetch`, configure the correct host permissions in its own manifest and handle CORS if needed. Never execute downloaded extension code automatically.
+This starter does not yet include publisher accounts, ownership checks, moderation, rate limiting, or malware scanning. Do not launch open public uploads until these protections are added. Only upload extensions you have permission to distribute.
